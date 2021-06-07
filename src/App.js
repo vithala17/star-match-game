@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './App.css';
 
 const PlayNumber = props => (
+
   <button
     className="number"
     style={{ backgroundColor: colors[props.status] }}
-    onClick={() => props.onClick(props.number, props.status)}
+    onClick={() => console.log('Num', props.number)}
   >
     {props.number}
   </button>
@@ -13,9 +14,9 @@ const PlayNumber = props => (
 
 const StarsDisplay = props => (
   <>
-    {utils.range(1, props.count).map(starId =>
+    {utils.range(1, props.count).map(starId => (
       <div key={starId} className="star" />
-    )}
+    ))}
   </>
 )
 
@@ -23,7 +24,7 @@ const StarMatch = () => {
 
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
-  const [candidateNums, setCandidateNums] = useState([]);
+  const [candidateNums, setCanditateNums] = useState([]);
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
 
@@ -31,31 +32,11 @@ const StarMatch = () => {
     if (!availableNums.includes(number)) {
       return 'used';
     }
-    if (!candidateNums.includes(number)) {
+    if (candidateNums.includes(number)) {
       return candidatesAreWrong ? 'wrong' : 'candidate';
     }
     return 'available';
   };
-
-  const onNumberClick = (number, currentStatus) => {
-    console.log(number + ":" + currentStatus);
-    if (currentStatus === 'used') {
-      return;
-    }
-    const newCandidateNums = candidateNums.concat(number);
-    if(utils.sum(newCandidateNums !== stars)){
-      setCandidateNums(newCandidateNums);
-    }
-    else{
-      const newAvailableNums = availableNums.filter(
-        n => !newCandidateNums.includes(n)
-      );
-      // redraw stars
-      setStars(utils.randomSumIn(newAvailableNums,9));
-      setAvailableNums(newAvailableNums);
-      setCandidateNums([]);
-    }
-  }
 
   return (
     <div className="game">
@@ -64,15 +45,14 @@ const StarMatch = () => {
       </div>
       <div className="body">
         <div className="left">
-          <StarsDisplay count={stars} />
+					<StarsDisplay count={stars}/>
         </div>
         <div className="right">
-          {utils.range(1, 9).map(number =>
-            <PlayNumber
-              key={number}
+        	{utils.range(1, 9).map(number =>
+          	<PlayNumber 
+            	key={number} 
               status={numberStatus(number)}
               number={number}
-              onClick={onNumberClick}
             />
           )}
         </div>
@@ -81,6 +61,7 @@ const StarMatch = () => {
     </div>
   );
 };
+
 
 // Color Theme
 const colors = {
